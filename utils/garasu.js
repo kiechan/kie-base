@@ -36,6 +36,15 @@ const SMAPLE_OUTPUT = {
         {
             words: '',
             url: 'https://salesforce.com'
+        },
+        {
+            words: '探している情報は見つからなかったッピ(- < -;)',
+            url: ''
+        }
+        ,
+        {
+            words: '他にどんな情報が知りたいッピ？',
+            url: ''
         }
     ]
 }
