@@ -1,5 +1,5 @@
-var kuroko = require('./utils/kuroko')
+const kuroko = require('./utils/kuroko')
 
-kuroko.analyse('ありがとう').then(function(result) {
+kuroko.analyse('川崎の人口は何人ですか？').then(function(result) {
     console.log(result)
 })
