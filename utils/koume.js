@@ -50,8 +50,9 @@ router.post('/', (req, res) => {
 
     // JSONを送信する
     res.send(talkObject)
+  }).catch(err => {
+    res.send(err)
   })
-
 });
 
 module.exports = router
