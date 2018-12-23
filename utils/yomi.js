@@ -49,7 +49,7 @@ module.exports.search = (inputData, satoriResult) => {
         queryStr = queryStr + "WHERE od.value LIKE $2 "
         queryStr = queryStr + "OR cat.category_name LIKE $2 "
 
-        client.query(queryStr, [area, "%" + word + "%"]).then(res => {
+        client.query(queryStr, ["%" + area + "%", "%" + word + "%"]).then(res => {
             if (res.rows.length <= 0) {
                 console.log("データが0件でした")
                 client.end()
