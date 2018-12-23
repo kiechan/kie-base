@@ -1,72 +1,55 @@
 // expressモジュールを読み込む
-const express = require('express');
-
-// expressアプリを生成する
-const app = express();
-
-// CORSを許可する
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+const express = require('express')
+const router = express.Router()
 
 /**
  * コウメAWBAPI.<br />
  * 各種処理呼び出しWEBAPI.<br />
  */
-app.post('/koume', (req, res) => {
+router.post('/', (req, res) => {
 
-    // 会話ID
-    let talkId = req.talkId;
-    // 会話連番
-    let talkSeqNo = req.talkSeqNo;
-    // 会話内容
-    let talkContent = req.talkContent;
+  // 会話ID
+  let talkId = req.body.talkId;
+  // 会話連番
+  let talkSeqNo = req.body.talkSeqNo;
+  // 会話内容
+  let talkContent = req.body.talkContent;
 
-    // エラーメッセージリスト生成
-    let errorMessageList = new Array();
+  // エラーメッセージリスト生成
+  let errorMessageList = new Array();
 
-    // 各種エラーチェック
-    // 【必須】会話ID
-    // if (talkId == null || talkId == '') {
-    //   errorMessageList.push('talkIdは必須です。')
-    // }
-    // // 【必須】会話連番
-    // if (talkSeqNo == null) {
-    //   errorMessageList.push('talkSeqNoは必須です。')
-    // }
+  // 各種エラーチェック
+  // 【必須】会話ID
+  // if (talkId == null || talkId == '') {
+  //   errorMessageList.push('talkIdは必須です。')
+  // }
+  // // 【必須】会話連番
+  // if (talkSeqNo == null) {
+  //   errorMessageList.push('talkSeqNoは必須です。')
+  // }
 
-    if (errorMessageList.length > 0) {
-      // エラーありの場合
-      res.json(errorMessageList);
-    }
+  if (errorMessageList.length > 0) {
+    // エラーありの場合
+    res.json(errorMessageList);
+  }
 
-    // TODO 処理呼び出し
+  // TODO 処理呼び出し
 
 
-    // 会話オブジェクト生成
-    let talkObject = new Object();
-    // 会話内容を設定
-    talkObject.talkId = 'dogId';
-    // 会話連番を設定
-    talkObject.talkSeqNo = 1;
-    // 返信オブジェクト生成
-    let talkResponse = new Array();
+  // 会話オブジェクト生成
+  let talkObject = {
+    talkId: 'dogId',
+    talkSeqNo: 1,
+    talkResponse: [
+      {
+        content: talkContent,
+        url: 'http://komachi.yomiuri.co.jp/t/2009/0618/246414.htm'
+      }
+    ]
+  }
 
-    let object1 = new Object();
-    // 返信内容
-    object1.content = '犬うるさい';
-    // 返信URL
-    object1.url = 'http://komachi.yomiuri.co.jp/t/2009/0618/246414.htm';
-    talkResponse.push(object1);
-    talkResponse.push(object1);
-    // 会話内容を設定
-    talkObject.talkResponse = talkResponse;
-
-    // JSONを送信する
-    res.json(talkObject);
+  // JSONを送信する
+  res.json(talkObject)
 });
 
-// ポート3000でサーバを立てる
-app.listen(3000, () => console.log('Listening on port 3000'));
+module.exports = router
