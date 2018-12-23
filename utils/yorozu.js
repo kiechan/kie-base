@@ -13,7 +13,8 @@ module.exports.getResponse = (data) => {
     return new Promise((resolve, reject) => {
         kuroko.analyse(data.message).then((result) => {
             satori.checkAnalyzedWords(result).then(satoriResult => {
-                yomi.search(satoriResult).then(yomiResult => {
+                yomi.search(result, satoriResult).then(yomiResult => {
+                    console.log(yomiResult)
                     if (yomiResult == null || yomiResult.length == 0) {
                         yomiResult = [{}]
                     }
