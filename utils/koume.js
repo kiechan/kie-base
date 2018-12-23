@@ -15,7 +15,7 @@ app.use(function(req, res, next) {
  * コウメAWBAPI.<br />
  * 各種処理呼び出しWEBAPI.<br />
  */
-app.post('/koume', (req, res) => {
+app.get('/koume', (req, res) => {
 
     // 会話ID
     let talkId = req.talkId;
@@ -52,11 +52,15 @@ app.post('/koume', (req, res) => {
     // 会話連番を設定
     talkObject.talkSeqNo = 1;
     // 返信オブジェクト生成
-    let talkResponse = new Object();
+    let talkResponse = new Array();
+
+    let object1 = new Object();
     // 返信内容
-    talkResponse.content = '犬うるさい';
+    object1.content = '犬うるさい';
     // 返信URL
-    talkResponse.url = 'http://komachi.yomiuri.co.jp/t/2009/0618/246414.htm';
+    object1.url = 'http://komachi.yomiuri.co.jp/t/2009/0618/246414.htm';
+    talkResponse.push(object1);
+    talkResponse.push(object1);
     // 会話内容を設定
     talkObject.talkResponse = talkResponse;
 
