@@ -15,7 +15,7 @@ app.use(function(req, res, next) {
  * コウメAWBAPI.<br />
  * 各種処理呼び出しWEBAPI.<br />
  */
-app.get('/koume', (req, res) => {
+app.post('/koume', (req, res) => {
 
     // 会話ID
     let talkId = req.talkId;
