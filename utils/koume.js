@@ -2,6 +2,8 @@
 const express = require('express')
 const router = express.Router()
 
+const yorozu = require('./yorozu')
+
 /**
  * コウメAWBAPI.<br />
  * 各種処理呼び出しWEBAPI.<br />
@@ -31,25 +33,25 @@ router.post('/', (req, res) => {
   if (errorMessageList.length > 0) {
     // エラーありの場合
     res.json(errorMessageList);
+    return
   }
 
   // TODO 処理呼び出し
+  yorozu.getResponse({
+    talkId: talkId,
+    message: talkContent
+  }).then(function (response) {
+    // 会話オブジェクト生成
+    let talkObject = {
+      talkId: 'dogId',
+      talkSeqNo: 1,
+      talkResponse: response
+    }
 
+    // JSONを送信する
+    res.send(talkObject)
+  })
 
-  // 会話オブジェクト生成
-  let talkObject = {
-    talkId: 'dogId',
-    talkSeqNo: 1,
-    talkResponse: [
-      {
-        content: talkContent,
-        url: 'http://komachi.yomiuri.co.jp/t/2009/0618/246414.htm'
-      }
-    ]
-  }
-
-  // JSONを送信する
-  res.json(talkObject)
 });
 
 module.exports = router
