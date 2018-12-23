@@ -61,6 +61,7 @@ module.exports.search = (inputData, satoriResult) => {
                 const innerData = {
                     url : res.rows[i].url,
                     row : {
+                        area : res.rows[i].name,
                         column : res.rows[i].word,
                         value : res.rows[i].value,
                         unit : res.rows[i].unit
