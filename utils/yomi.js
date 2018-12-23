@@ -6,21 +6,19 @@
  */
 module.exports.search = (inputData, satoriResult) => {
     return new Promise((resolve, reject) => {
-        if (inputData.length  <= 0) {
+        if (inputData.length  <= 0 || satoriResult.length <= 0) {
             console.log("inputデータがありません")
             reject()
         }
         let area = ""
         let word = ""
-        for (let i = 0; i < inputData.length; i++) {
-            // 検索地域を取得
-            if (inputData[i].typeDetail2 == '地域') {
-                area = area + inputData[i].word
-            }
-            // 検索ワードを取得
-            if (inputData[i].typeDetail1 == '一般') {
-                word = inputData[i].word
-            }
+        // 検索地域を取得
+        for (let i = 0; i < satoriResult.areaArray.length; i++) {
+            area = area + satoriResult.areaArray[i]
+        }
+        // 検索ワードを取得
+        for (let i = 0; i < satoriResult.keywordArray.length; i++) {
+            word = word + satoriResult.keywordArray[i]
         }
 
         let result = []
