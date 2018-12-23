@@ -4,7 +4,7 @@
  * yomi データ検索
  * @return {area:地名,category:カテゴリー,data:[{url:URL,row:{column:項目,value:情報,unit:単位}}]}
  */
-module.exports.search = (inputData) => {
+module.exports.search = (inputData, satoriResult) => {
     return new Promise((resolve, reject) => {
         if (inputData.length  <= 0) {
             console.log("inputデータがありません")
@@ -39,18 +39,18 @@ module.exports.search = (inputData) => {
                 reject()
             }
         })
-        let queryStr =           "SELECT COALESCE(ma.district, ma.municipality, ma.prefectures) area "
-        queryStr = queryStr +         ", * "
-        queryStr = queryStr +      "FROM t_opendata tod "
-        queryStr = queryStr + "LEFT JOIN m_category mc "
-        queryStr = queryStr +        "ON tod.category_code = mc.category_code "
-        queryStr = queryStr + "LEFT JOIN m_area ma "
-        queryStr = queryStr +        "ON tod.area_code = ma.area_code "
-        queryStr = queryStr +     "WHERE ma.prefectures LIKE $1 "
-        queryStr = queryStr +        "OR ma.municipality LIKE $1 "
-        queryStr = queryStr +        "OR ma.district LIKE $1 "
-        queryStr = queryStr +       "AND tod.word LIKE $2 "
-        queryStr = queryStr +        "OR mc.category_name LIKE $2 "
+        let queryStr = "SELECT area.code, area.name, od.value, od.unit, od.url, od.word, cat.category_name "
+        queryStr = queryStr + "FROM (SELECT area_code AS code, COALESCE(district, municipality, prefectures) AS name FROM m_area "
+        queryStr = queryStr + "WHERE prefectures LIKE $1 "
+        queryStr = queryStr + "OR municipality LIKE $1 "
+        queryStr = queryStr + "OR district LIKE $1 ) area "
+        queryStr = queryStr + "LEFT JOIN t_opendata od "
+        queryStr = queryStr + "ON area.code = od.area_code "
+        queryStr = queryStr + "INNER JOIN m_category cat "
+        queryStr = queryStr + "ON od.category_code = cat.category_code "
+        queryStr = queryStr + "WHERE od.value LIKE $2 "
+        queryStr = queryStr + "OR cat.category_name LIKE $2 "
+
         client.query(queryStr, [area, "%" + word + "%"]).then(res => {
             if (res.rows.length <= 0) {
                 console.log("データが0件でした")
