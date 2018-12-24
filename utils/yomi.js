@@ -37,8 +37,8 @@ module.exports.search = (inputData, satoriResult) => {
                 reject()
             }
         })
-        let queryStr = "SELECT area.code, area.name, od.value, od.unit, od.url, od.word, cat.category_name "
-        queryStr = queryStr + "FROM (SELECT area_code AS code, COALESCE(district, municipality, prefectures) AS name FROM m_area "
+        let queryStr = "SELECT area.code, area.areaName, od.value, od.unit, od.url, od.word, cat.category_name "
+        queryStr = queryStr + "FROM (SELECT area_code AS code, COALESCE(district, municipality, prefectures) AS name, concat(prefectures, municipality, district) AS areaName FROM m_area "
         queryStr = queryStr + "WHERE prefectures LIKE $1 "
         queryStr = queryStr + "OR municipality LIKE $1 "
         queryStr = queryStr + "OR district LIKE $1 ) area "
@@ -61,7 +61,7 @@ module.exports.search = (inputData, satoriResult) => {
                 const innerData = {
                     url : res.rows[i].url,
                     row : {
-                        area : res.rows[i].name,
+                        area : res.rows[i].areaname,
                         column : res.rows[i].word,
                         value : res.rows[i].value,
                         unit : res.rows[i].unit
