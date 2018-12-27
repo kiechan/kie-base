@@ -31,7 +31,7 @@ module.exports.createMessages = (rowData) => {
             status: 1,
             messages: [
                 {
-                    words: area + 'の' + category + 'は' + answers[0].row.value + answers[0].row.unit + 'ッピ！',
+                    words: answers[0].row.area + 'の' + category + 'は' + answers[0].row.value + answers[0].row.unit + 'ッピ！',
                     url: (answers[0].url !== '') ? answers[0].url : null
                 },
                 {
