@@ -12,8 +12,6 @@ router.post('/', (req, res) => {
 
   // 会話ID
   let talkId = req.body.talkId;
-  // 会話連番
-  let talkSeqNo = req.body.talkSeqNo;
   // 会話内容
   let talkContent = req.body.talkContent;
 
@@ -36,18 +34,15 @@ router.post('/', (req, res) => {
     return
   }
 
-  // TODO 処理呼び出し
   yorozu.getResponse({
     talkId: talkId,
     message: talkContent
   }).then(function (response) {
     // 会話オブジェクト生成
     let talkObject = {
-      talkId: 'dogId',
-      talkSeqNo: 1,
+      talkId: 1,
       talkResponse: response
     }
-
     // JSONを送信する
     res.send(talkObject)
   }).catch(err => {
