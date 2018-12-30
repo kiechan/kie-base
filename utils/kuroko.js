@@ -53,7 +53,23 @@ module.exports.analyse = (sentence) => {
                 nouns.push(word)
             }
 
-            resolve(nouns)
+            let returnNouns = []
+
+            for (let i = 0; i < nouns.length; i++) {
+                let isExist = false
+                for (let j = 0; j < returnNouns.length; j++) {
+                    if (returnNouns[j].word == nouns[i].word) {
+                        isExist = true
+                        break
+                    }
+                }
+                if (!isExist) {
+                    returnNouns.push(nouns[i])
+                }
+            }
+
+            resolve(returnNouns)
         })
     })
 }
+

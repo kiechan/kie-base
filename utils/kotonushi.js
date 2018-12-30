@@ -29,7 +29,9 @@ module.exports.createMessage = (satoriResult) => {
     // 返却メッセージオブジェクト
     const returnMessage = {
         status: 0,
-        messages: []
+        messages: [],
+        areaArray: satoriResult.areaArray,
+        keywordArray: satoriResult.keywordArray
     }
 
     // SATORIの結果がNULL又は正常系
