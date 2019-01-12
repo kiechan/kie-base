@@ -70,36 +70,39 @@ module.exports.checkAnalyzedWords = (analyzedWords) => {
                 // 地域判定
                 const QUERY_1 =
                     "SELECT "
-                    + "COUNT(mst.*) AS cnt "
+                    + "mst.* "
                     + "FROM m_area mst "
                     + "WHERE mst.prefectures LIKE $1 "
                     + "OR mst.municipality LIKE $1 "
                     + "OR mst.district LIKE $1 "
                 client.query(QUERY_1, ["%" + word + "%"]).then(res => {
                     if (res.rows.length > 0) {
-                        if (res.rows[0].cnt != null && res.rows[0].cnt > 0) {
-                            // 地域データが存在する場合
-                            isArea = true;
-                        }
+                        // 地域データが存在する場合
+                        isArea = true;
+                    } else {
+                        // 地域データが存在しない場合
+                        isArea = false;
                     }
 
                     // キーワード判定
                     const QUERY_2 =
                         "SELECT "
-                        + "COUNT(mst.*) AS cnt "
+                        + "mst.* "
                         + "FROM m_category mst "
-                        + "WHERE mst.category_name LIKE $1 "
+                        + "WHERE mst.category_name LIKE $1 ";
                     client.query(QUERY_2, ["%" + word + "%"]).then(res => {
                         if (res.rows.length == 1) {
-                          // キーワードが1件の場合
-                            if (res.rows[0].cnt != null && res.rows[0].cnt > 0) {
-                                // カテゴリデータが存在する場合
-                                isKeyword = true;
-                            }
+                            // キーワードが1件の場合
+                            // カテゴリデータが存在する場合
+                            isKeyword = true;
+
                         } else if (res.rows.length > 1) {
                             // キーワードが2件の場合
                             isKeyword = true;
-                            overKeywordNum = false;
+                            overKeywordNum = true;
+                        } else {
+                            // キーワードが存在しない場合
+                            isKeyword = false;
                         }
 
                         if (isArea) {
@@ -131,27 +134,25 @@ module.exports.checkAnalyzedWords = (analyzedWords) => {
         }
 
         resolve(Promise.all(fncAry).then(results => {
-            let resultdiv = '1';                  // 結果区分（0(NG),1(OK)）
-            let ngDiv = null;                     // NG区分（0(キーワード地域なし),1(キーワードなし),2(地域なし),3(キーワード複数件)）
+            let resultdiv = '1';                   // 結果区分（0(NG),1(OK)）
+            let isAreaResult = false;               // 地域存在フラグ（最終結果）
+            let isKeywordResult = false;            // キーワード存在フラグ（最終結果）
+            let isOverKeywordNumResult = false;    // キーワード複数存在フラグ（最終結果）
+            let ngDiv = null;                      // NG区分（0(キーワード地域なし),1(キーワードなし),2(地域なし),3(キーワード複数件)）
             results.forEach(function(val){
               resultdiv = '1';
               ngDiv = null;
-              if (!val.isArea && !val.isKeyword) {
-                  // キーワード地域なし
-                  resultdiv = '0';
-                  ngDiv = '0';
-              } else if (val.isArea && !val.isKeyword) {
-                // キーワードなし
-                resultdiv = '0';
-                ngDiv = '1';
-              } else if (!val.isArea && val.isKeyword) {
-                // 地域なし
-                resultdiv = '0';
-                ngDiv = '2';
-              } else if (val.overKeywordNum) {
-                // キーワード複数件
-                resultdiv = '0';
-                ngDiv = '3';
+              if (val.isArea) {
+                // 地域が存在しない場合
+                isAreaResult = true;
+              }
+              if (val.isKeyword) {
+                // キーワードが存在しない場合
+                isKeywordResult = true;
+              }
+              if (val.overKeywordNum) {
+                // キーワードが複数件の場合
+                isOverKeywordNumResult = true;
               }
               if (val.area != null) {
                 // 地域名が有効な場合
@@ -164,10 +165,29 @@ module.exports.checkAnalyzedWords = (analyzedWords) => {
             });
             // 返却用オブジェクトの生成
             let result = new Object();
-            result.resultdiv = resultdiv;
-            result.ngDiv = ngDiv;
             result.areaArray = areaArray;
             result.keywordArray = keywordArray;
+            if (!isAreaResult && !isKeywordResult) {
+                // キーワード地域なし
+                result.resultdiv = '0';
+                result.ngDiv = '0';
+            } else if (isAreaResult && !isKeywordResult) {
+              // キーワードなし
+              result.resultdiv = '0';
+              result.ngDiv = '1';
+            } else if (!isAreaResult && isKeywordResult) {
+              // 地域なし
+              result.resultdiv = '0';
+              result.ngDiv = '2';
+            } else if (isOverKeywordNumResult) {
+              // キーワード複数件
+              result.resultdiv = '0';
+              result.ngDiv = '3';
+            } else {
+              // 正常
+              result.resultdiv = '1';
+              result.ngDiv = '';
+            }
             client.end();
             return result;
         }).catch(err => {
