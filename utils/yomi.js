@@ -54,31 +54,32 @@ module.exports.search = (inputData, satoriResult) => {
                 console.log("データが0件でした")
                 client.end()
                 reject()
-            }
-            // データ作成
-            let data = []
-            for (let i = 0; i < res.rows.length; i++) {
-                const innerData = {
-                    url : res.rows[i].url,
-                    row : {
-                        area : res.rows[i].areaname,
-                        column : res.rows[i].word,
-                        value : res.rows[i].value,
-                        unit : res.rows[i].unit
+            } else {
+                // データ作成
+                let data = []
+                for (let i = 0; i < res.rows.length; i++) {
+                    const innerData = {
+                        url : res.rows[i].url,
+                        row : {
+                            area : res.rows[i].areaname,
+                            column : res.rows[i].word,
+                            value : res.rows[i].value,
+                            unit : res.rows[i].unit
+                        }
                     }
+                    data.push(innerData)
                 }
-                data.push(innerData)
-            }
 
-            // 返却用データ作成
-            const outData = {
-                area : area,
-                category : res.rows[0].category_name,
-                data : data
+                // 返却用データ作成
+                const outData = {
+                    area : area,
+                    category : res.rows[0].category_name,
+                    data : data
+                }
+                result.push(outData)
+                client.end()
+                resolve(result)
             }
-            result.push(outData)
-            client.end()
-            resolve(result)
         }).catch(e => {
             console.log("データ取得に失敗しました")
             console.error(e)
