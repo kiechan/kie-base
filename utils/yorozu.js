@@ -38,15 +38,21 @@ module.exports.getResponse = (data) => {
                     resolve(response)
                 }).catch(err => {
                     console.log(err)
-                    reject(err)
+                    // GARASU 検索結果を言葉に変換する
+                    const response = garasu.createMessages(null)
+                    resolve(response)
                 })
             }).catch(err => {
                 console.log(err)
-                reject(err)
+                // GARASU 検索結果を言葉に変換する
+                const response = garasu.createMessages(null)
+                resolve(response)
             })
         }).catch(() => {
             console.log(err)
-            reject(err)
+            // GARASU 検索結果を言葉に変換する
+            const response = garasu.createMessages(null)
+            resolve(response)
         })
     })
 }

@@ -8,6 +8,10 @@ const NEW_TALK_MESSAGE = '他になんの情報が知りたいッピ？'
  */
 module.exports.createMessages = (rowData) => {
 
+    if (rowData == null) {
+        return { status: 0, messages: [{ words: NO_DATA_MESSAGE, url: null }, { words: NEW_TALK_MESSAGE, url: null }]}
+    }
+
     const area = rowData.area
     const category = rowData.category
     const answers = rowData.data
